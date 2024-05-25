@@ -2,6 +2,7 @@
 
 namespace App\Tests\Controller;
 
+use App\Entity\Game;
 use App\Tests\ApiTestCase\ApiTestCase;
 use App\Tests\Fixture\DatabaseFixture;
 use Exception;
@@ -70,7 +71,31 @@ class GameControllerTest extends ApiTestCase
     public function testMove(): void
     {
         //we need a game fixture to test the move api
-        DatabaseFixture::createGame();
+        //let's assume this is a new game
+
+        $game_id = '1';
+
+        $game_data = [
+            'id' => $game_id,
+            'board'   => Game::EMPTY_BOARD,
+            'next_player' => '1'
+        ];
+
+        DatabaseFixture::createGame($this->entityManager, $game_data);
+
+        //let's obtain an admin token to be able to play the game
+        $token = $this->getToken($this->client, ['username' => 'admin', 'password' => 'password']);
+        $this->client->setServerParameter('HTTP_Authorization', sprintf('Bearer %s', $token));
+
+        //let's make a move. Player 1 starts, it is his turn. He wants to hit the second row, first column (position 3)
+        $body_move = [
+            'game_id' => $game_id,
+            'player' => '1',
+            'position' => '3'
+        ];
+
+        $this->client->request('POST', '/api/move', [], [], [], json_encode($body_move));
+
 
     }
 

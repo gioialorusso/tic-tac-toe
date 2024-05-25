@@ -9,9 +9,7 @@ class AuthenticationSuccessListener{
 
     public function onAuthenticationSuccessResponse(AuthenticationSuccessEvent $event): void
     {
-        $event->setData([
-            ApiResponse::getOKPayload($event->getData())
-        ]);
+        $event->setData(ApiResponse::getOKPayload($event->getData()));
     }
 
 }

@@ -2,6 +2,7 @@
 
 namespace App\Tests\ApiTestCase;
 
+use App\ApiResponse\ApiResponse;
 use App\Tests\Fixture\DatabaseFixture;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
@@ -43,7 +44,8 @@ class ApiTestCase extends WebTestCase
         $response = $client->getResponse();
         $this->assertJson($response->getContent());
         $array_response = json_decode($response->getContent(), true);
-        $this->assertEquals('JWT Token not found', $array_response['message']);
+        $this->assertEquals(ApiResponse::KO, $array_response['result']);
+        $this->assertEquals('JWT Token not found', $array_response['error_msg']);
     }
 
 
@@ -52,6 +54,8 @@ class ApiTestCase extends WebTestCase
         $this->assertResponseStatusCodeSame(200);
         $response = $client->getResponse();
         $this->assertJson($response->getContent());
+        $array_response = json_decode($response->getContent(), true);
+        $this->assertEquals(ApiResponse::OK, $array_response['result']);
     }
 
 
@@ -75,14 +79,14 @@ class ApiTestCase extends WebTestCase
         $response = $client->getResponse();
         $response = json_decode($response->getContent(), true);
 
-        return $response['token'];
+        return $response['return']['token'];
     }
 
     protected function getGameIdFromApiResponse(KernelBrowser $client): string
     {
         $response = $client->getResponse();
         $response = json_decode($response->getContent(), true);
-        return $response['id'];
+        return $response['return']['id'];
     }
     
 }

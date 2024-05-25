@@ -54,7 +54,7 @@ class DatabaseFixture extends KernelTestCase
 
     }
 
-    public static function createGame(EntityManagerInterface $entityManager, array $game_data): string
+    public static function createGame(EntityManagerInterface $entityManager, array $game_data): void
     {
         $query = "INSERT INTO game (id, board, current_player) VALUES (:id, :board, :current_player)";
         $connection = $entityManager->getConnection();
@@ -64,7 +64,6 @@ class DatabaseFixture extends KernelTestCase
             'current_player' => $game_data['current_player']
         ];
         $connection->executeQuery($query, $args);
-        return $game_data['id'];
     }
 
 }

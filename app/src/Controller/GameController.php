@@ -27,7 +27,7 @@ class GameController extends AbstractController
         $return_data = [
             'id' => $game->getId(),
             'board' => $game->getBoard(),
-            'currentPlayer' => $game->getCurrentPlayer()
+            'currentPlayer' => $game->getNextPlayer()
         ];
 
         return ApiResponse::createOKResponse($return_data);
