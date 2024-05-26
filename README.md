@@ -99,7 +99,7 @@ I created some basic unit tests, for example the ApiResponseTest and the GameTes
 For end-to-end API tests (GameApiTest and ValidateGameApiTest), I wanted to check the interaction with the database, so I create a Base Test Class which drops and creates a test database. <br/>
 To connect to the test database, I specified the credentials in the .env.test file, as well as the regular credentials for the application which are stored in the .env file. Of course this should be avoided for production credentials and credentials should be managed by some sort of secret management service. (Kubernetes + Cloud secret storage service, for example). <br/>
 When creating the test database, there are some fixture pre-loaded in the db, for example the admin user, which is needed to test the authentication and some APIs. <br/>
-Not coming from a Symfony/other framework background, I recognize that tests can be for sure improved (using mocks, for example, and taking advantage of the possibility to easily inject dependencies). I assume that I can mock the GameService to avoid the database dependency, I tried to play a bit but I didn't succeed. <br/>
+Not coming from a Symfony/other framework background, I recognize that tests can be for sure improved (using mocks, for example, and taking advantage of the possibility to easily inject dependencies). I assume that I can mock the GameService to avoid the database dependency, I tried to play a bit trying to set the mock in the container but I didn't succeed. <br/>
 
 ### APIs
 
