@@ -1,7 +1,7 @@
 <?php
 
 
-namespace App\Tests\Fixture;
+namespace App\Tests\Common;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;

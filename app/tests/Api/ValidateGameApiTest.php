@@ -1,13 +1,12 @@
 <?php
 
-namespace App\Tests\Controller;
+namespace App\Tests\Api;
 
 use App\Entity\Game;
-use App\Tests\ApiTestCase\ApiTestCase;
-use App\Tests\Fixture\DatabaseFixture;
+use App\Tests\Common\DatabaseFixture;
 use Symfony\Component\HttpFoundation\Response;
 
-class ValidateGameControllerMethodsTest extends ApiTestCase
+class ValidateGameApiTest extends ApiTestCase
 {
     public function testValidateMove(): void
     {
@@ -121,7 +120,7 @@ class ValidateGameControllerMethodsTest extends ApiTestCase
         ];
 
         $this->client->request('POST', '/api/game/move', [], [], [], json_encode($body_move));
-        $this->assertKoResponseApi(Response::HTTP_NOT_FOUND, 'Game not found');
+        $this->assertKoResponseApi(Response::HTTP_NOT_FOUND, Game::GAME_NOT_FOUND);
 
         //Let's create a game
         $game_id = uniqid('ttt');
@@ -140,7 +139,7 @@ class ValidateGameControllerMethodsTest extends ApiTestCase
         ];
 
         $this->client->request('POST', '/api/game/move', [], [], [], json_encode($body_move));
-        $this->assertKoResponseApi(Response::HTTP_BAD_REQUEST, "It is not player 2's turn.");
+        $this->assertKoResponseApi(Response::HTTP_BAD_REQUEST, sprintf(Game::NOT_PLAYERS_TURN, 2));
 
         //let's move on a full board
         $game_data['board'] = [
@@ -163,7 +162,7 @@ class ValidateGameControllerMethodsTest extends ApiTestCase
         ];
 
         $this->client->request('POST', '/api/game/move', [], [], [], json_encode($body_move));
-        $this->assertKoResponseApi(Response::HTTP_BAD_REQUEST, 'The board is full.');
+        $this->assertKoResponseApi(Response::HTTP_BAD_REQUEST, Game::BOARD_FULL);
 
         //let's move on a position already occupied
         $game_data['board'] = [
@@ -189,7 +188,7 @@ class ValidateGameControllerMethodsTest extends ApiTestCase
             ];
 
             $this->client->request('POST', '/api/game/move', [], [], [], json_encode($body_move));
-            $this->assertKoResponseApi(Response::HTTP_BAD_REQUEST, 'This position is already occupied.');
+            $this->assertKoResponseApi(Response::HTTP_BAD_REQUEST, Game::POSITION_OCCUPIED);
         }
 
 
@@ -215,7 +214,7 @@ class ValidateGameControllerMethodsTest extends ApiTestCase
         ];
 
         $this->client->request('POST', '/api/game/move', [], [], [], json_encode($body_move));
-        $this->assertKoResponseApi(Response::HTTP_BAD_REQUEST, 'The game is already won.');
+        $this->assertKoResponseApi(Response::HTTP_BAD_REQUEST, Game::GAME_WON);
 
 
     }

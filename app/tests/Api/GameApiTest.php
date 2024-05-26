@@ -1,15 +1,12 @@
 <?php
 
-namespace App\Tests\Controller;
+namespace App\Tests\Api;
 
-use App\Controller\GameController;
 use App\Entity\Game;
-use App\Tests\ApiTestCase\ApiTestCase;
-use App\Tests\Fixture\DatabaseFixture;
-use Exception;
+use App\Tests\Common\DatabaseFixture;
 use Symfony\Component\HttpFoundation\Response;
 
-class GameControllerTest extends ApiTestCase
+class GameApiTest extends ApiTestCase
 {
 
     /**
@@ -233,7 +230,7 @@ class GameControllerTest extends ApiTestCase
         $response = $this->moveInPosition(2, $response['return']['next_player'], $response['return']['game_id'], $response['return']['board'], $response['return']['next_player']);
 
         //another move will cause an exception
-        $this->moveAndAssertErrorResponse(5, $response['return']['next_player'], $response['return']['game_id'], Response::HTTP_BAD_REQUEST, GameController::GAME_WON);
+        $this->moveAndAssertErrorResponse(5, $response['return']['next_player'], $response['return']['game_id'], Response::HTTP_BAD_REQUEST, Game::GAME_WON);
 
     }
 
@@ -260,7 +257,7 @@ class GameControllerTest extends ApiTestCase
         $response = $this->moveInPosition(5, $response['return']['next_player'], $response['return']['game_id'], $response['return']['board'], $response['return']['next_player']);
 
         //another move will cause an exception
-        $this->moveAndAssertErrorResponse(6, $response['return']['next_player'], $response['return']['game_id'], Response::HTTP_BAD_REQUEST, GameController::GAME_WON);
+        $this->moveAndAssertErrorResponse(6, $response['return']['next_player'], $response['return']['game_id'], Response::HTTP_BAD_REQUEST, Game::GAME_WON);
 
     }
 
@@ -287,7 +284,7 @@ class GameControllerTest extends ApiTestCase
 
 
         //another move will cause an exception
-        $this->moveAndAssertErrorResponse(5, $response['return']['next_player'], $response['return']['game_id'], Response::HTTP_BAD_REQUEST, GameController::GAME_WON);
+        $this->moveAndAssertErrorResponse(5, $response['return']['next_player'], $response['return']['game_id'], Response::HTTP_BAD_REQUEST, Game::GAME_WON);
 
     }
 
@@ -311,7 +308,7 @@ class GameControllerTest extends ApiTestCase
         $response = $this->moveInPosition(8, $response['return']['next_player'], $response['return']['game_id'], $response['return']['board'], $response['return']['next_player'] );
 
         //another move will cause an exception
-        $this->moveAndAssertErrorResponse(6, $response['return']['next_player'], $response['return']['game_id'], Response::HTTP_BAD_REQUEST, GameController::GAME_WON);
+        $this->moveAndAssertErrorResponse(6, $response['return']['next_player'], $response['return']['game_id'], Response::HTTP_BAD_REQUEST, Game::GAME_WON);
 
     }
 
@@ -347,7 +344,7 @@ class GameControllerTest extends ApiTestCase
         $response = $this->moveInPosition(7, $response['return']['next_player'], $response['return']['game_id'], $response['return']['board']);
 
         //another move will cause an exception
-        $this->moveAndAssertErrorResponse(8, $response['return']['next_player'], $response['return']['game_id'], Response::HTTP_BAD_REQUEST, GameController::BOARD_FULL);
+        $this->moveAndAssertErrorResponse(8, $response['return']['next_player'], $response['return']['game_id'], Response::HTTP_BAD_REQUEST, Game::BOARD_FULL);
 
 
     }

@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Tests\ApiTestCase;
+namespace App\Tests\Api;
 
 use App\ApiResponse\ApiResponse;
-use App\Tests\BaseTestCase\BaseTestCase;
+use App\Tests\Common\BaseTestCase;
 use Symfony\Component\HttpFoundation\Response;
 
 class ApiTestCase extends BaseTestCase

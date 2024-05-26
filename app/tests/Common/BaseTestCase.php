@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Tests\BaseTestCase;
+namespace App\Tests\Common;
 
-use App\Tests\Fixture\DatabaseFixture;
+use App\Tests\Common\DatabaseFixture;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
