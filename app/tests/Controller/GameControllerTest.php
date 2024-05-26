@@ -56,6 +56,14 @@ class GameControllerTest extends ApiTestCase
         //is the response ok?
         $this->assertOkResponseApi($this->client);
 
+        //let's see if values are as expected
+        $response = json_decode($this->client->getResponse()->getContent(), true);
+        $this->assertNotEmpty($response['return']['game_id']);
+        $this->assertEquals(Game::PLAYER_1, $response['return']['next_player']);
+        $this->assertEquals(Game::EMPTY_MARK, $response['return']['winner']);
+        $this->assertEquals(Game::EMPTY_BOARD, $response['return']['board']);
+
+
         //great, let's check if the game is in the db
         $game_id = $this->getGameIdFromApiResponse($this->client);
         $query = 'SELECT * FROM game WHERE id = :id';
@@ -73,12 +81,12 @@ class GameControllerTest extends ApiTestCase
         //we need a game fixture to test the move api
         //let's assume this is a new game
 
-        $game_id = '1';
+        $game_id = uniqid('ttt');
 
         $game_data = [
             'id' => $game_id,
             'board'   => Game::EMPTY_BOARD,
-            'next_player' => '1'
+            'next_player' => Game::PLAYER_1
         ];
 
         DatabaseFixture::createGame($this->entityManager, $game_data);
@@ -90,11 +98,33 @@ class GameControllerTest extends ApiTestCase
         //let's make a move. Player 1 starts, it is his turn. He wants to hit the second row, first column (position 3)
         $body_move = [
             'game_id' => $game_id,
-            'player' => '1',
-            'position' => '3'
+            'player' => Game::PLAYER_1,
+            'position' => 3
         ];
 
-        $this->client->request('POST', '/api/move', [], [], [], json_encode($body_move));
+        $this->client->request('POST', '/api/game/move', [], [], [], json_encode($body_move));
+        $this->assertOkResponseApi($this->client);
+        $response = $this->client->getResponse();
+        $response = json_decode($response->getContent(), true);
+
+        //we expect that: the game has not a winner, the next player is 2, the board is updated
+        $this->assertEquals($game_id, $response['return']['game_id']);
+        $this->assertEquals('', $response['return']['winner']);
+        $this->assertEquals(Game::PLAYER_2, $response['return']['next_player']);
+        $this->assertEquals([
+            Game::EMPTY_MARK,
+            Game::EMPTY_MARK,
+            Game::EMPTY_MARK,
+            Game::PLAYER_1_MARK,
+            Game::EMPTY_MARK,
+            Game::EMPTY_MARK,
+            Game::EMPTY_MARK,
+            Game::EMPTY_MARK,
+            Game::EMPTY_MARK
+        ], $response['return']['board']);
+
+
+
 
 
     }

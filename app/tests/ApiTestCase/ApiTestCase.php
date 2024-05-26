@@ -3,40 +3,22 @@
 namespace App\Tests\ApiTestCase;
 
 use App\ApiResponse\ApiResponse;
-use App\Tests\Fixture\DatabaseFixture;
-use Doctrine\ORM\EntityManagerInterface;
-use Exception;
+use App\Tests\BaseTestCase\BaseTestCase;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
-class ApiTestCase extends WebTestCase
+class ApiTestCase extends BaseTestCase
 {
 
-    protected KernelBrowser $client;
-    protected ?EntityManagerInterface $entityManager;
+    const VALIDATION_MESSAGE_NOT_BLANK = 'This value should not be blank.';
+    const VALIDATION_MESSAGE_TYPE_INT = 'This value should be of type int.';
+    const VALIDATION_MESSAGE_TYPE_CHOICE = 'The value you selected is not a valid choice.';
+    const VALIDATION_MESSAGE_TYPE_STRING = 'This value should be of type string.';
+    //here would be better to have a custom translation with parameters rather than specific for my case.
+    //but in tic-tac-toe game, the range is always 0-8.
+    const VALIDATION_MESSAGE_RANGE_0_8 = 'This value should be between 0 and 8.';
 
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        $this->client = static::createClient();
-        // Get the entity manager
-        $this->entityManager = $this->client->getContainer()->get('doctrine')->getManager();
-
-        // Initialize database setup
-        try {
-            DatabaseFixture::setupDatabase($this->client);
-        }catch (Exception $e){
-            $this->fail($e->getMessage());
-        }
-    }
-
-    protected function tearDown(): void
-    {
-        parent::tearDown();
-        $this->entityManager->close();
-        $this->entityManager = null;
-    }
 
     protected function assertUnauthorizedAccess(KernelBrowser $client): void
     {
@@ -56,6 +38,21 @@ class ApiTestCase extends WebTestCase
         $this->assertJson($response->getContent());
         $array_response = json_decode($response->getContent(), true);
         $this->assertEquals(ApiResponse::OK, $array_response['result']);
+    }
+
+    protected function assertKoResponseApi(KernelBrowser $client, int $expectedCode = Response::HTTP_BAD_REQUEST, string $error_msg = '', string $error_msg_contains = ''): void
+    {
+        $this->assertResponseStatusCodeSame($expectedCode);
+        $response = $client->getResponse();
+        $this->assertJson($response->getContent());
+        $array_response = json_decode($response->getContent(), true);
+        $this->assertEquals(ApiResponse::KO, $array_response['result']);
+        if(!empty($error_msg)) {
+            $this->assertEquals($error_msg, $array_response['error_msg']);
+        }
+        if(!empty($error_msg_contains)) {
+            $this->assertStringContainsString($error_msg_contains, $array_response['error_msg']);
+        }
     }
 
 
@@ -86,7 +83,7 @@ class ApiTestCase extends WebTestCase
     {
         $response = $client->getResponse();
         $response = json_decode($response->getContent(), true);
-        return $response['return']['id'];
+        return $response['return']['game_id'];
     }
     
 }

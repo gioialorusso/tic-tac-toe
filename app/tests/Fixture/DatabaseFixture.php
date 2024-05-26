@@ -56,12 +56,26 @@ class DatabaseFixture extends KernelTestCase
 
     public static function createGame(EntityManagerInterface $entityManager, array $game_data): void
     {
-        $query = "INSERT INTO game (id, board, current_player) VALUES (:id, :board, :current_player)";
+        $query = "INSERT INTO game (id, board, next_player, winner) VALUES (:id, :board, :next_player, :winner)";
         $connection = $entityManager->getConnection();
         $args = [
             'id' => $game_data['id'],
-            'board' => $game_data['board'],
-            'current_player' => $game_data['current_player']
+            'board' => json_encode($game_data['board']),
+            'next_player' => $game_data['next_player'],
+            'winner' => $game_data['winner'] ?? ''
+        ];
+        $connection->executeQuery($query, $args);
+    }
+
+    public static function updateGame(EntityManagerInterface $entityManager, array $game_data): void
+    {
+        $query = "UPDATE game SET board = :board, next_player = :next_player, winner = :winner WHERE id = :id";
+        $connection = $entityManager->getConnection();
+        $args = [
+            'id' => $game_data['id'],
+            'board' => json_encode($game_data['board']),
+            'next_player' => $game_data['next_player'],
+            'winner' => $game_data['winner'] ?? ''
         ];
         $connection->executeQuery($query, $args);
     }

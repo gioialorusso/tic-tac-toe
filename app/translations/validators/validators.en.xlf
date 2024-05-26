@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+    <file source-language="en" datatype="plaintext" original="file.ext">
+        <body>
+            <trans-unit id="move.gameId.not_blank">
+                <source>move.gameId.not_blank</source>
+                <target>game_id: This value should not be blank.</target>
+            </trans-unit>
+            <trans-unit id="move.player.not_blank">
+                <source>move.player.not_blank</source>
+                <target>player: This value should not be blank.</target>
+            </trans-unit>
+            <trans-unit id="move.position.not_blank">
+                <source>move.position.not_blank</source>
+                <target>position: This value should not be blank.</target>
+            </trans-unit>
+            <trans-unit id="move.gameId.type">
+                <source>move.gameId.type</source>
+                <target>game_id: This value should be of type string.</target>
+            </trans-unit>
+            <trans-unit id="move.player.type">
+                <source>move.player.type</source>
+                <target>player: This value should be of type int.</target>
+            </trans-unit>
+            <trans-unit id="move.position.type">
+                <source>move.position.type</source>
+                <target>position: This value should be of type int.</target>
+            </trans-unit>
+            <trans-unit id="move.player.choice">
+                <source>move.player.choice</source>
+                <target>player: The value you selected is not a valid choice.</target>
+            </trans-unit>
+             <trans-unit id="move.position.range">
+                <source>move.position.range</source>
+                <target>position: This value should be between 0 and 8.</target>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>

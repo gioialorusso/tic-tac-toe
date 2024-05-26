@@ -2,6 +2,7 @@
 
 namespace App\ApiResponse;
 
+use App\Entity\Game;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -34,6 +35,21 @@ class ApiResponse{
             'result' => self::KO,
             'return' => $data,
             'error_msg' => $error_msg
+        ];
+    }
+
+    public static function createOKGameResponse(Game $game): JsonResponse
+    {
+        return self::createOKResponse(self::getReturnGamePayload($game));
+    }
+
+    private static function getReturnGamePayload(Game $game): array
+    {
+        return [
+            'game_id' => $game->getId(),
+            'board' => $game->getBoard(),
+            'next_player' => $game->getNextPlayer(),
+            'winner' => $game->getWinner()
         ];
     }
 }
