@@ -17,6 +17,7 @@ class GameControllerTest extends ApiTestCase
     {
         $routes = [
             ['POST', '/api/game/start'],
+            ['POST', '/api/game/move'],
         ];
 
         //calling all the routes without authentication
@@ -26,10 +27,15 @@ class GameControllerTest extends ApiTestCase
         }
 
 
-        //[TODO] let's try with an expired token:
-        /*$token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJpYXQiOjE3MTY2NTMwMzYsImV4cCI6MTcxNjY1NjYzNiwicm9sZXMiOlsiUk9MRV9BRE1JTiIsIlJPTEVfVVNFUiJdLCJ1c2VybmFtZSI6ImFkbWluQHRpY3RhY3RvZS5jb20ifQ.Qf0ph_9T2DU3Cx9Xz9NIGFTVDfdMxHZ3B8zdWVJb9sFtX1plENwZIKn9lM3B2rNG4nxfMLDDxwcxE5fK83m4Ohfj57UlhT0xNkIJXynigvOacc6IfF_NMZhx7iw6oUAymXkbD3XKWCuJ40cmnxI4OzJ6iFyw-oDw_MkrgU3h1hQ81ut5ONnTKxNH3lpn2iDdVhOgzrx5zKhBp5Pwj99Cap88l8YVmZFkL9ukWyYzcrJ1hfNgS0g-dLhGzd7hVJ8QjnqtyMV94ybBp_LkiQV6k5tgHdL60Fz1zjfJ_itiDNpjKS-R7keeRpAwnwuvgukpRljCBscbgLR5ngk1P_5-zA";
+
+        $token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJpYXQiOjE3MTY2NTMwMzYsImV4cCI6MTcxNjY1NjYzNiwicm9sZXMiOlsiUk9MRV9BRE1JTiIsIlJPTEVfVVNFUiJdLCJ1c2VybmFtZSI6ImFkbWluQHRpY3RhY3RvZS5jb20ifQ.Qf0ph_9T2DU3Cx9Xz9NIGFTVDfdMxHZ3B8zdWVJb9sFtX1plENwZIKn9lM3B2rNG4nxfMLDDxwcxE5fK83m4Ohfj57UlhT0xNkIJXynigvOacc6IfF_NMZhx7iw6oUAymXkbD3XKWCuJ40cmnxI4OzJ6iFyw-oDw_MkrgU3h1hQ81ut5ONnTKxNH3lpn2iDdVhOgzrx5zKhBp5Pwj99Cap88l8YVmZFkL9ukWyYzcrJ1hfNgS0g-dLhGzd7hVJ8QjnqtyMV94ybBp_LkiQV6k5tgHdL60Fz1zjfJ_itiDNpjKS-R7keeRpAwnwuvgukpRljCBscbgLR5ngk1P_5-zA";
         $this->client->setServerParameter('HTTP_Authorization', sprintf('Bearer %s', $token));
-        */
+
+        foreach($routes as $route){
+            $this->client->request($route[0], $route[1]);
+            $this->assertExpiredToken($this->client);
+        }
+
 
         //let's obtain a token for a user and let's see that we are not authorized to these routes
         //(we decided to give access only to admins)
@@ -49,12 +55,12 @@ class GameControllerTest extends ApiTestCase
     public function testStartGame(): void
     {
         //first of all we need a token to call the start api
-        $token = $this->getToken($this->client, ['username' => 'admin', 'password' => 'password']);
+        $token = $this->getToken(['username' => 'admin', 'password' => 'password']);
         $this->client->setServerParameter('HTTP_Authorization', sprintf('Bearer %s', $token));
         $this->client->request('POST', '/api/game/start');
 
         //is the response ok?
-        $this->assertOkResponseApi($this->client);
+        $this->assertOkResponseApi();
 
         //let's see if values are as expected
         $response = json_decode($this->client->getResponse()->getContent(), true);
@@ -65,7 +71,7 @@ class GameControllerTest extends ApiTestCase
 
 
         //great, let's check if the game is in the db
-        $game_id = $this->getGameIdFromApiResponse($this->client);
+        $game_id = $this->getGameIdFromApiResponse();
         $query = 'SELECT * FROM game WHERE id = :id';
         $args = ['id' => $game_id];
 
@@ -92,7 +98,7 @@ class GameControllerTest extends ApiTestCase
         DatabaseFixture::createGame($this->entityManager, $game_data);
 
         //let's obtain an admin token to be able to play the game
-        $token = $this->getToken($this->client, ['username' => 'admin', 'password' => 'password']);
+        $token = $this->getToken(['username' => 'admin', 'password' => 'password']);
         $this->client->setServerParameter('HTTP_Authorization', sprintf('Bearer %s', $token));
 
         //let's make a move. Player 1 starts, it is his turn. He wants to hit the second row, first column (position 3)
@@ -103,7 +109,7 @@ class GameControllerTest extends ApiTestCase
         ];
 
         $this->client->request('POST', '/api/game/move', [], [], [], json_encode($body_move));
-        $this->assertOkResponseApi($this->client);
+        $this->assertOkResponseApi();
         $response = $this->client->getResponse();
         $response = json_decode($response->getContent(), true);
 

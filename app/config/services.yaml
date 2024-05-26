@@ -32,6 +32,10 @@ services:
         class: App\EventListener\JwtNotFoundListener
         tags:
             - { name: kernel.event_listener, event: lexik_jwt_authentication.on_jwt_not_found, method: onJwtNotFoundResponse }
+    app.listener.jwt_expired_response:
+        class: App\EventListener\JwtExpiredListener
+        tags:
+            - { name: kernel.event_listener, event: lexik_jwt_authentication.on_jwt_expired, method: onJwtExpiredResponse }
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones

@@ -4,46 +4,56 @@ namespace App\Tests\ApiTestCase;
 
 use App\ApiResponse\ApiResponse;
 use App\Tests\BaseTestCase\BaseTestCase;
-use Symfony\Bundle\FrameworkBundle\KernelBrowser;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class ApiTestCase extends BaseTestCase
 {
 
-    const VALIDATION_MESSAGE_NOT_BLANK = 'This value should not be blank.';
-    const VALIDATION_MESSAGE_TYPE_INT = 'This value should be of type int.';
-    const VALIDATION_MESSAGE_TYPE_CHOICE = 'The value you selected is not a valid choice.';
-    const VALIDATION_MESSAGE_TYPE_STRING = 'This value should be of type string.';
+    const string VALIDATION_MESSAGE_NOT_BLANK = 'This value should not be blank.';
+    const string VALIDATION_MESSAGE_TYPE_INT = 'This value should be of type int.';
+    const string VALIDATION_MESSAGE_TYPE_CHOICE = 'The value you selected is not a valid choice.';
+    const string VALIDATION_MESSAGE_TYPE_STRING = 'This value should be of type string.';
     //here would be better to have a custom translation with parameters rather than specific for my case.
     //but in tic-tac-toe game, the range is always 0-8.
-    const VALIDATION_MESSAGE_RANGE_0_8 = 'This value should be between 0 and 8.';
+    const string VALIDATION_MESSAGE_RANGE_0_8 = 'This value should be between 0 and 8.';
 
 
-    protected function assertUnauthorizedAccess(KernelBrowser $client): void
+    private function assertKOToken(string $message): void
     {
         $this->assertResponseStatusCodeSame(401);
-        $response = $client->getResponse();
+        $response = $this->client->getResponse();
         $this->assertJson($response->getContent());
         $array_response = json_decode($response->getContent(), true);
         $this->assertEquals(ApiResponse::KO, $array_response['result']);
-        $this->assertEquals('JWT Token not found', $array_response['error_msg']);
+        $this->assertEquals($message, $array_response['error_msg']);
+
+    }
+
+    protected function assertUnauthorizedAccess(): void
+    {
+        $this->assertKOToken('JWT Token not found');
     }
 
 
-    protected function assertOkResponseApi(KernelBrowser $client): void
+    protected function assertExpiredToken(): void
+    {
+        $this->assertKOToken('Expired JWT Token');
+    }
+
+
+    protected function assertOkResponseApi(): void
     {
         $this->assertResponseStatusCodeSame(200);
-        $response = $client->getResponse();
+        $response = $this->client->getResponse();
         $this->assertJson($response->getContent());
         $array_response = json_decode($response->getContent(), true);
         $this->assertEquals(ApiResponse::OK, $array_response['result']);
     }
 
-    protected function assertKoResponseApi(KernelBrowser $client, int $expectedCode = Response::HTTP_BAD_REQUEST, string $error_msg = '', string $error_msg_contains = ''): void
+    protected function assertKoResponseApi(int $expectedCode = Response::HTTP_BAD_REQUEST, string $error_msg = '', string $error_msg_contains = ''): void
     {
         $this->assertResponseStatusCodeSame($expectedCode);
-        $response = $client->getResponse();
+        $response = $this->client->getResponse();
         $this->assertJson($response->getContent());
         $array_response = json_decode($response->getContent(), true);
         $this->assertEquals(ApiResponse::KO, $array_response['result']);
@@ -56,9 +66,9 @@ class ApiTestCase extends BaseTestCase
     }
 
 
-    protected function getToken(KernelBrowser $client, array $user_data): string
+    protected function getToken(array $user_data): string
     {
-        $client->request('POST', '/api/login', [], [], [
+        $this->client->request('POST', '/api/login', [], [], [
             'CONTENT_TYPE' => 'application/json',
         ], json_encode([
                 'username' => $user_data['username'],
@@ -66,22 +76,22 @@ class ApiTestCase extends BaseTestCase
                 ])
         );
         $this->assertResponseStatusCodeSame(200);
-        $this->assertOkResponseApi($client);
-        return $this->getTokenFromApiResponse($client);
+        $this->assertOkResponseApi();
+        return $this->getTokenFromApiResponse();
 
     }
 
-    private function getTokenFromApiResponse(KernelBrowser $client): string
+    private function getTokenFromApiResponse(): string
     {
-        $response = $client->getResponse();
+        $response = $this->client->getResponse();
         $response = json_decode($response->getContent(), true);
 
         return $response['return']['token'];
     }
 
-    protected function getGameIdFromApiResponse(KernelBrowser $client): string
+    protected function getGameIdFromApiResponse(): string
     {
-        $response = $client->getResponse();
+        $response = $this->client->getResponse();
         $response = json_decode($response->getContent(), true);
         return $response['return']['game_id'];
     }

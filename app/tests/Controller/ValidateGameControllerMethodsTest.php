@@ -11,7 +11,7 @@ class ValidateGameControllerMethodsTest extends ApiTestCase
 {
     public function testValidateMove(): void
     {
-        $token = $this->getToken($this->client, ['username' => 'admin', 'password' => 'password']);
+        $token = $this->getToken(['username' => 'admin', 'password' => 'password']);
         $this->client->setServerParameter('HTTP_Authorization', sprintf('Bearer %s', $token));
 
         //game_id missing
@@ -21,7 +21,7 @@ class ValidateGameControllerMethodsTest extends ApiTestCase
         ];
 
         $this->client->request('POST', '/api/game/move', [], [], [], json_encode($body_move));
-        $this->assertKoResponseApi($this->client, 400, 'game_id: '.ApiTestCase::VALIDATION_MESSAGE_NOT_BLANK);
+        $this->assertKoResponseApi(400, 'game_id: ' . ApiTestCase::VALIDATION_MESSAGE_NOT_BLANK);
 
         //game_id wrong type
         $body_move = [
@@ -31,7 +31,7 @@ class ValidateGameControllerMethodsTest extends ApiTestCase
         ];
 
         $this->client->request('POST', '/api/game/move', [], [], [], json_encode($body_move));
-        $this->assertKoResponseApi($this->client, 400, 'game_id: '.ApiTestCase::VALIDATION_MESSAGE_TYPE_STRING);
+        $this->assertKoResponseApi(400, 'game_id: ' . ApiTestCase::VALIDATION_MESSAGE_TYPE_STRING);
 
         //player missing
         $body_move = [
@@ -40,7 +40,7 @@ class ValidateGameControllerMethodsTest extends ApiTestCase
         ];
 
         $this->client->request('POST', '/api/game/move', [], [], [], json_encode($body_move));
-        $this->assertKoResponseApi($this->client, 400, 'player: '.ApiTestCase::VALIDATION_MESSAGE_NOT_BLANK);
+        $this->assertKoResponseApi(400, 'player: ' . ApiTestCase::VALIDATION_MESSAGE_NOT_BLANK);
 
         //player not in 1, 2
         $body_move = [
@@ -50,7 +50,7 @@ class ValidateGameControllerMethodsTest extends ApiTestCase
         ];
 
         $this->client->request('POST', '/api/game/move', [], [], [], json_encode($body_move));
-        $this->assertKoResponseApi($this->client, 400, 'player: '.ApiTestCase::VALIDATION_MESSAGE_TYPE_CHOICE);
+        $this->assertKoResponseApi(400, 'player: ' . ApiTestCase::VALIDATION_MESSAGE_TYPE_CHOICE);
 
         //player wrong type
 
@@ -61,7 +61,7 @@ class ValidateGameControllerMethodsTest extends ApiTestCase
         ];
 
         $this->client->request('POST', '/api/game/move', [], [], [], json_encode($body_move));
-        $this->assertKoResponseApi($this->client, 400, 'player: '.ApiTestCase::VALIDATION_MESSAGE_TYPE_INT."player: ".ApiTestCase::VALIDATION_MESSAGE_TYPE_CHOICE);
+        $this->assertKoResponseApi(400, 'player: ' . ApiTestCase::VALIDATION_MESSAGE_TYPE_INT . "player: " . ApiTestCase::VALIDATION_MESSAGE_TYPE_CHOICE);
 
         //position missing
         $body_move = [
@@ -70,7 +70,7 @@ class ValidateGameControllerMethodsTest extends ApiTestCase
         ];
 
         $this->client->request('POST', '/api/game/move', [], [], [], json_encode($body_move));
-        $this->assertKoResponseApi($this->client, 400, 'position: '.ApiTestCase::VALIDATION_MESSAGE_NOT_BLANK);
+        $this->assertKoResponseApi(400, 'position: ' . ApiTestCase::VALIDATION_MESSAGE_NOT_BLANK);
 
         //position not in 0, 1, 2, 3, 4, 5, 6, 7, 8
         $body_move = [
@@ -80,7 +80,7 @@ class ValidateGameControllerMethodsTest extends ApiTestCase
         ];
 
         $this->client->request('POST', '/api/game/move', [], [], [], json_encode($body_move));
-        $this->assertKoResponseApi($this->client, 400, 'position: '.ApiTestCase::VALIDATION_MESSAGE_RANGE_0_8);
+        $this->assertKoResponseApi(400, 'position: ' . ApiTestCase::VALIDATION_MESSAGE_RANGE_0_8);
 
         $body_move = [
             'game_id' => '1',
@@ -89,7 +89,7 @@ class ValidateGameControllerMethodsTest extends ApiTestCase
         ];
 
         $this->client->request('POST', '/api/game/move', [], [], [], json_encode($body_move));
-        $this->assertKoResponseApi($this->client, 400, 'position: '.ApiTestCase::VALIDATION_MESSAGE_RANGE_0_8);
+        $this->assertKoResponseApi(400, 'position: ' . ApiTestCase::VALIDATION_MESSAGE_RANGE_0_8);
 
 
         $body_move = [
@@ -99,7 +99,7 @@ class ValidateGameControllerMethodsTest extends ApiTestCase
         ];
 
         $this->client->request('POST', '/api/game/move', [], [], [], json_encode($body_move));
-        $this->assertKoResponseApi($this->client, 400, 'position: '.ApiTestCase::VALIDATION_MESSAGE_RANGE_0_8);
+        $this->assertKoResponseApi(400, 'position: ' . ApiTestCase::VALIDATION_MESSAGE_RANGE_0_8);
 
 
         //position wrong type
@@ -110,7 +110,7 @@ class ValidateGameControllerMethodsTest extends ApiTestCase
         ];
 
         $this->client->request('POST', '/api/game/move', [], [], [], json_encode($body_move));
-        $this->assertKoResponseApi($this->client, 400, 'position: '.ApiTestCase::VALIDATION_MESSAGE_TYPE_INT);
+        $this->assertKoResponseApi(400, 'position: ' . ApiTestCase::VALIDATION_MESSAGE_TYPE_INT);
 
 
         //everything formally correct, but unexistent game
@@ -121,7 +121,7 @@ class ValidateGameControllerMethodsTest extends ApiTestCase
         ];
 
         $this->client->request('POST', '/api/game/move', [], [], [], json_encode($body_move));
-        $this->assertKoResponseApi($this->client, Response::HTTP_NOT_FOUND, 'Game not found');
+        $this->assertKoResponseApi(Response::HTTP_NOT_FOUND, 'Game not found');
 
         //Let's create a game
         $game_id = uniqid('ttt');
@@ -140,7 +140,7 @@ class ValidateGameControllerMethodsTest extends ApiTestCase
         ];
 
         $this->client->request('POST', '/api/game/move', [], [], [], json_encode($body_move));
-        $this->assertKoResponseApi($this->client, Response::HTTP_BAD_REQUEST, "It is not player 2's turn." );
+        $this->assertKoResponseApi(Response::HTTP_BAD_REQUEST, "It is not player 2's turn.");
 
         //let's move on a full board
         $game_data['board'] = [
@@ -163,7 +163,7 @@ class ValidateGameControllerMethodsTest extends ApiTestCase
         ];
 
         $this->client->request('POST', '/api/game/move', [], [], [], json_encode($body_move));
-        $this->assertKoResponseApi($this->client, Response::HTTP_BAD_REQUEST, 'The board is full.');
+        $this->assertKoResponseApi(Response::HTTP_BAD_REQUEST, 'The board is full.');
 
         //let's move on a position already occupied
         $game_data['board'] = [
@@ -189,7 +189,7 @@ class ValidateGameControllerMethodsTest extends ApiTestCase
             ];
 
             $this->client->request('POST', '/api/game/move', [], [], [], json_encode($body_move));
-            $this->assertKoResponseApi($this->client, Response::HTTP_BAD_REQUEST, 'This position is already occupied.');
+            $this->assertKoResponseApi(Response::HTTP_BAD_REQUEST, 'This position is already occupied.');
         }
 
 
@@ -215,7 +215,7 @@ class ValidateGameControllerMethodsTest extends ApiTestCase
         ];
 
         $this->client->request('POST', '/api/game/move', [], [], [], json_encode($body_move));
-        $this->assertKoResponseApi($this->client, Response::HTTP_BAD_REQUEST, 'The game is already won.');
+        $this->assertKoResponseApi(Response::HTTP_BAD_REQUEST, 'The game is already won.');
 
 
     }
