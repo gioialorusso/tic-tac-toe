@@ -3,10 +3,13 @@ This is a simple implementation in Symfony 7 of the APIs needed to play a tic ta
 
 ## Installation
 1. Clone the repository.
-2. Go into the project folder.
+2. Go into the project folder and run `cd docker`.
 3. Run `docker-compose up -d`.
-4. The application is now running on `http://localhost`.
-5. Apply the migrations by running `docker-compose exec php bin/console doctrine:migrations:migrate`.
+4. Enter the php-fpm container by running `docker exec -it php-fpm bash`.
+5. Run `composer install`.
+6. Run `php bin/console doctrine:migrations:migrate`.
+7. Create a pair of public/private keys for the JWT authentication by running `mkdir config/jwt && openssl genrsa -out config/jwt/private.pem && openssl rsa -in config/jwt/private.pem -pubout > config/jwt/public.pem`.
+8. The application is now running on `http://localhost`.
 
 ## Usage
 
