@@ -89,7 +89,7 @@ In the controller, I added the relevant validations to check if the game exists,
 I created translations for the validation messages to have more readability in the error (e.g. "game_id: This value should not be blank"). It is also possible to define different translations for different languages and thus having a UI which considers the user language. <br/>
 
 
-### OK - KO responses
+#### OK - KO responses
 I standardized the responses of the APIs, so that the client can understand if the request was successful or not. It could be enough to check the HTTP status code, but anyway for the sake of clarity I added the result of the API in the response. <br/>
 
 
