@@ -110,7 +110,7 @@ I added the relevant tests to test that endpoints are not called without authent
 
 #### Game
 API for the game are pretty basic, there is an endpoint to start a new game and an endpoint to make a move, which are described in the API doc and quickly in the Usage section. <br/>
-In the controller, I added the relevant validations to check if the game exists, if the player is correct, if the position is correct and if the game is already finished. All validation tests are in the ValidateGameControllerMethodsTest class. <br/>
+The controller performs validation on the request. The service class handles objects manipulation and storage. I added functional validations in the object class, to check if the game exists, if the player is correct, if the position is correct and if the game is already finished. All validations have been tested. <br/>
 I created translations for the validation messages to have more readability in the error (e.g. "game_id: This value should not be blank"). It is also possible to define different translations for different languages, thus having a UI which considers the user language. <br/>
 
 
