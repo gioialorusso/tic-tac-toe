@@ -32,17 +32,7 @@ You will receive a response with the game id and the board. <br/>
     "return": {
       "game_id": "game_id",
       "next_player": 1,
-      "board": [
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        ""
-      ],
+      "board": ["", "", "", "", "", "", "", "", ""],
       "winner": ""
     }
 }
