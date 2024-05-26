@@ -21,22 +21,53 @@ First of all you need to retrieve a token to use the APIs. You can do this by se
     "password": "admin"
 }
 ```
-You will receive a token in the response. You need to use this token in the Authorization header of the following requests. <br/>
+You will receive a token in the response. You need to use this token in the Authorization header (a Bearer one) of the following requests. <br/>
 
 ### Create a new game
 To create a new game, you need to send a POST request to the `/api/game/start` endpoint.
 You will receive a response with the game id and the board. <br/>
-
+```json
+{
+    "result": "OK",
+    "return": {
+      "game_id": "game_id",
+      "next_player": 1,
+      "board": [
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "winner": ""
+    }
+}
+```
 ### Make a move
 To make a move, you need to send a POST request to the `/api/game/move` endpoint with the following body:
 ```json
 {
-    "game_id": 'game_id',
+    "game_id": "game_id",
     "player": 1,
-    "position": 1
+    "position": 0
 }
 ```
-
+You will receive a response with the updated status of the game
+```json
+{
+    "result": "OK",
+    "return": {
+        "game_id": "game_id",
+        "next_player": 2,
+        "board": ["X", "", "", "", "", "", "", "", ""],
+        "winner": ""
+    }
+}
+```
 ### Run tests
 Enter the php-fpm container by running the following command:
 ```bash
@@ -71,26 +102,26 @@ I created a new Symfony project in the app directory using the `composer create-
 ### Unit tests
 Before going on with the implementation, I created some unit tests to test the creation of the game and the moves. I used the `phpunit` library to run the tests. From Symfony docs, I used `composer require --dev symfony/test-pack` to install PHPUnit. <br/>
 I created some basic unit tests, for example the ApiResponseTest. These tests do not need any db to work. <br/>
-For Entities tests (GameTest) and for API tests (GameControllerTest), I needed to check the interaction with the database, so I create a Base Test Class which drops and create a test database. <br/>
-To connect to the test database, I specified the credentials in the .env.test file, as well as the regular credentials for the application which are stored in the .env file. Of course this should be avoided for production credentials and credentials should be managed by some sort of secret management service. (Kubernetes + Cloud secret storage service, possibly). <br/>
+For Entities tests (GameTest) and for API tests (GameControllerTest), I needed to check the interaction with the database, so I create a Base Test Class which drops and creates a test database. <br/>
+To connect to the test database, I specified the credentials in the .env.test file, as well as the regular credentials for the application which are stored in the .env file. Of course this should be avoided for production credentials and credentials should be managed by some sort of secret management service. (Kubernetes + Cloud secret storage service, for example). <br/>
 When creating the test database, there are some fixture pre-loaded in the db, for example the admin user, which is needed to test the authentication and some APIs. <br/>
-
+Not coming from a Symfony/other framework background, I recognize that tests can be for sure improved (using mocks, for example, and taking advantage of the possibility to easily inject dependencies). As today, tests are pretty much end-to-end tests for APIs and unit tests for Game and ApiResponse classes. <br/>
 
 ### APIs
 
 #### Authentication
-Since I didn't want to leave my API open to the world, I installed the `lexik/jwt-authentication-bundle` to manage the authentication via a JWT token. I created a new User entity and I configured the bundle to use it. <br/>
+Since I didn't want to leave my APIs open to the world, I installed the `lexik/jwt-authentication-bundle` to manage the authentication via a JWT token. I created a new User entity and I configured the bundle to use it. <br/>
 For the sake of simplicity, since this was a small project to experiment with Symfony, I decided to protect the API endpoints with an ADMIN authentication, without authenticating the single players, but of course this can be done in a future extension of the project. The admin user is hardcoded in the database and it is created by the migration which creates the user table. <br/>
-I added the relevant tests into the api folder. <br/>
+I added the relevant tests to test that endpoints are not called without authentication. <br/>
 
 #### Game
-API for the game are pretty basic, there is an endpoint to start a new game and an endpoint to make a move, which are described in the API doc. <br/>
-In the controller, I added the relevant validations to check if the game exists, if the player is correct, if the position is correct and if the game is already finished. <br/>
-I created translations for the validation messages to have more readability in the error (e.g. "game_id: This value should not be blank"). It is also possible to define different translations for different languages and thus having a UI which considers the user language. <br/>
+API for the game are pretty basic, there is an endpoint to start a new game and an endpoint to make a move, which are described in the API doc and quickly in the Usage section. <br/>
+In the controller, I added the relevant validations to check if the game exists, if the player is correct, if the position is correct and if the game is already finished. All validation tests are in the ValidateGameControllerMethodsTest class. <br/>
+I created translations for the validation messages to have more readability in the error (e.g. "game_id: This value should not be blank"). It is also possible to define different translations for different languages, thus having a UI which considers the user language. <br/>
 
 
 #### OK - KO responses
-I standardized the responses of the APIs, so that the client can understand if the request was successful or not. It could be enough to check the HTTP status code, but anyway for the sake of clarity I added the result of the API in the response. <br/>
+I standardized the responses of the APIs, so that the client can understand if the request was successful or not and knows where the returned data are. For success and error purpose, it could also be enough to check the HTTP status code. <br/>
 
 
 ## Conclusion
