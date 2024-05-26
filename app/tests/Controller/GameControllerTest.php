@@ -23,7 +23,7 @@ class GameControllerTest extends ApiTestCase
         //calling all the routes without authentication
         foreach($routes as $route){
             $this->client->request($route[0], $route[1]);
-            $this->assertUnauthorizedAccess($this->client);
+            $this->assertUnauthorizedAccess();
         }
 
 
@@ -33,7 +33,7 @@ class GameControllerTest extends ApiTestCase
 
         foreach($routes as $route){
             $this->client->request($route[0], $route[1]);
-            $this->assertExpiredToken($this->client);
+            $this->assertExpiredToken();
         }
 
 
