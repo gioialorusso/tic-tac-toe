@@ -17,6 +17,14 @@ class GameService implements GameServiceInterface
         $this->entityManager = $entityManager;
     }
 
+    public function createGame(): Game
+    {
+        $game = new Game();
+        $this->entityManager->persist($game);
+        $this->entityManager->flush();
+        return $game;
+    }
+
     public function makeMove(MoveRequest $moveRequest): Game
     {
         $game = $this->entityManager->getRepository(Game::class)->find($moveRequest->getGameId());

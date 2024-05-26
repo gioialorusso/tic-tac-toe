@@ -5,7 +5,6 @@ namespace App\Controller;
 use App\ApiResponse\ApiResponse;
 use App\DTO\MoveRequest;
 use App\Entity\Game;
-use App\Service\GameService;
 use App\Service\GameServiceInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -21,12 +20,10 @@ class GameController extends AbstractController
 {
 
     #[Route('/api/game/start', name: 'start_game', methods: ['POST'])]
-    public function start(EntityManagerInterface $entityManager): JsonResponse
+    public function start(EntityManagerInterface $entityManager, GameServiceInterface $gameService): JsonResponse
     {
-        $game = new Game();
-        $entityManager->persist($game);
-        $entityManager->flush();
 
+        $game = $gameService->createGame();
         return ApiResponse::createOKGameResponse($game);
 
     }
