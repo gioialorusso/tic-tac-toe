@@ -38,19 +38,6 @@ class GameControllerTest extends ApiTestCase
             $this->assertExpiredToken();
         }
 
-        //let's obtain a token for a user and let's see that we are not authorized to these routes
-        //(we decided to give access only to admins)
-
-        //[TODO] domani vediamo se si riesce a sistemare altrimenti lasciamo perdere
-        /*$token = $this->getToken($this->client, ['username' =>'user', 'password' => 'password']);
-        $this->client->setServerParameter('HTTP_Authorization', sprintf('Bearer %s', $token));
-
-        //calling all the routes with user authentication
-        foreach($routes as $route){
-            $this->client->request($route[0], $route[1]);
-            $this->assertUnauthorizedAccess($this->client);
-        }*/
-
     }
 
     public function testStartGame(): void

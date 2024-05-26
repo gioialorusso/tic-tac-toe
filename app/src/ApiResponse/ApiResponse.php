@@ -8,8 +8,17 @@ use Symfony\Component\HttpFoundation\Response;
 
 class ApiResponse{
 
-    const OK = 'OK';
-    const KO = 'KO';
+    const string OK = 'OK';
+    const string KO = 'KO';
+
+    const string RESULT_KEY = 'result';
+    const string RETURN_KEY = 'return';
+    const string ERROR_MSG_KEY = 'error_msg';
+
+    const string GAME_ID_KEY = 'game_id';
+    const string BOARD_KEY = 'board';
+    const string NEXT_PLAYER_KEY = 'next_player';
+    const string WINNER_KEY = 'winner';
 
     public static function createOKResponse(array $data = []){
 
@@ -24,17 +33,17 @@ class ApiResponse{
     public static function getOKPayload(array $data = []): array
     {
         return [
-            'result' => self::OK,
-            'return' => $data
+            self::RESULT_KEY => self::OK,
+            self::RETURN_KEY => $data
         ];
     }
 
     public static function getKOPayload(array $data = [], string $error_msg = ''): array
     {
         return [
-            'result' => self::KO,
-            'return' => $data,
-            'error_msg' => $error_msg
+            self::RESULT_KEY => self::KO,
+            self::RETURN_KEY => $data,
+            self::ERROR_MSG_KEY => $error_msg
         ];
     }
 
@@ -46,10 +55,10 @@ class ApiResponse{
     private static function getReturnGamePayload(Game $game): array
     {
         return [
-            'game_id' => $game->getId(),
-            'board' => $game->getBoard(),
-            'next_player' => $game->getNextPlayer(),
-            'winner' => $game->getWinner()
+            self::GAME_ID_KEY => $game->getId(),
+            self::BOARD_KEY => $game->getBoard(),
+            self::NEXT_PLAYER_KEY => $game->getNextPlayer(),
+            self::WINNER_KEY => $game->getWinner()
         ];
     }
 }

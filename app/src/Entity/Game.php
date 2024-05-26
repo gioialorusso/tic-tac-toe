@@ -57,7 +57,7 @@ class Game extends BaseEntity
         return $this->id;
     }
 
-    public function setId(int $id): static
+    public function setId(string $id): static
     {
         $this->id = $id;
 
