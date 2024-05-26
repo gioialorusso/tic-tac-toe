@@ -1,0 +1,165 @@
+nelmio_api_doc:
+    documentation:
+        info:
+            title: Tic-Tac-Toe
+            description: This is a set of APIs that allows users to play tic-tac-toe.
+            version: 1.0.0
+        paths:
+            /api/login:
+                post:
+                    tags:
+                        - Authentication
+                    summary: Get JWT token to authenticate the calls
+                    requestBody:
+                        required: true
+                        content:
+                            application/json:
+                                schema:
+                                    $ref: '#/components/schemas/Credentials'
+                    responses:
+                        '200':
+                            description: JWT token
+                            content:
+                                application/json:
+                                    schema:
+                                        $ref: '#/components/schemas/Token'
+                        '401':
+                            description: Unauthorized
+                            content:
+                                application/json:
+                                    schema:
+                                        type: object
+                                        properties:
+                                            result:
+                                                type: string
+                                                example: "KO"
+                                            return:
+                                                type: object
+                                            error_msg:
+                                                type: string
+                                                example: "Bad credentials."
+
+            /api/game/start:
+                post:
+                    tags:
+                        - Game
+                    summary: Start a new game
+                    security:
+                        - Bearer: [ ]
+                    responses:
+                        '200':
+                            description: Game started
+                            content:
+                                application/json:
+                                    schema:
+                                        $ref: '#/components/schemas/Game'
+            /api/game/move:
+                post:
+                    tags:
+                        - Game
+                    summary: Make a move in the game
+                    security:
+                        - Bearer: [ ]
+                    requestBody:
+                        required: true
+                        content:
+                            application/json:
+                                schema:
+                                    type: object
+                                    properties:
+                                        game_id:
+                                            type: string
+                                        position:
+                                            type: integer
+                                        player:
+                                            type: integer
+                                            example: 1
+                    responses:
+                        '200':
+                            description: Move made
+                            content:
+                                application/json:
+                                    schema:
+                                        $ref: '#/components/schemas/Game'
+                        '404':
+                            description: Game not found
+                            content:
+                                application/json:
+                                    schema:
+                                        type: object
+                                        properties:
+                                            result:
+                                                type: string
+                                                example: "KO"
+                                            return:
+                                                type: object
+                                            error_msg:
+                                                type: string
+                                                example: "Game not found"
+                        '400':
+                            description: Bad Request
+                            content:
+                                application/json:
+                                    schema:
+                                        type: object
+                                        properties:
+                                            result:
+                                                type: string
+                                                example: "KO"
+                                            return:
+                                                type: object
+                                            error_msg:
+                                                type: string
+                                                example: "The board is full.|This position is already occupied.|The game is already won."
+        components:
+            schemas:
+                Token:
+                    type: object
+                    properties:
+                        result:
+                            type: string
+                            readOnly: true
+                        return:
+                            type: object
+                            properties:
+                                token:
+                                    type: string
+                                    readOnly: true
+                Credentials:
+                    type: object
+                    properties:
+                        username:
+                            type: string
+                        password:
+                            type: string
+                Game:
+                    type: object
+                    properties:
+                        game_id:
+                            type: string
+                            readOnly: true
+                        board:
+                            type: array
+                            items:
+                                type: string
+                            example: ['', '', '', '', '', '', '', '', '']
+                            readOnly: true
+                        next_player:
+                            type: integer
+                            readOnly: true
+                            example: 1
+                        winner:
+                            type: integer
+                            readOnly: true
+                            example: ''
+
+            securitySchemes:
+                Bearer:
+                    type: http
+                    scheme: bearer
+                    bearerFormat: JWT
+            security:
+                - Bearer: [ ]
+    areas: # to filter documented areas
+        path_patterns:
+            - ^/api(?!/doc$) # Accepts routes under /api except /api/doc
