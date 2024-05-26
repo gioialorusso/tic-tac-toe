@@ -3,7 +3,7 @@ This is a simple implementation in Symfony 7 of the APIs needed to play a tic ta
 
 ## Installation
 1. Clone the repository.
-2. Go into the main folder (cd tic-tac-toe)
+2. Go into the project folder.
 3. Run `docker-compose up -d`.
 4. The application is now running on `http://localhost`.
 5. Apply the migrations by running `docker-compose exec php bin/console doctrine:migrations:migrate`.
