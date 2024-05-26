@@ -121,4 +121,61 @@ class GameTest extends BaseTestCase
         $game = $this->entityManager->getRepository(Game::class)->find($game_id);
         $winning ? $this->assertEquals($winner, $game->checkWinner()) : $this->assertNull($game->checkWinner());
     }
+
+    public function testMakeMove()
+    {
+
+        $game_id = uniqid('ttt');
+        $game_data = [
+            'id' => $game_id,
+            'board'   => Game::EMPTY_BOARD,
+            'next_player' => Game::PLAYER_1
+        ];
+        DatabaseFixture::createGame($this->entityManager, $game_data);
+
+        $game = $this->entityManager->getRepository(Game::class)->find($game_id);
+
+        $game->makeMove(Game::PLAYER_1, 0);
+        $this->assertEquals(Game::PLAYER_1_MARK, $game->getBoard()[0]);
+        $this->assertEquals(Game::PLAYER_2, $game->getNextPlayer());
+        $this->assertEquals(Game::EMPTY_MARK, $game->getWinner());
+
+        $game->makeMove(Game::PLAYER_2, 1);
+        $this->assertEquals(Game::PLAYER_2_MARK, $game->getBoard()[1]);
+        $this->assertEquals(Game::PLAYER_1, $game->getNextPlayer());
+        $this->assertEquals(Game::EMPTY_MARK, $game->getWinner());
+
+
+        $game->makeMove(Game::PLAYER_1, 2);
+        $this->assertEquals(Game::PLAYER_1_MARK, $game->getBoard()[2]);
+        $this->assertEquals(Game::PLAYER_2, $game->getNextPlayer());
+        $this->assertEquals(Game::EMPTY_MARK, $game->getWinner());
+
+
+        $game->makeMove(Game::PLAYER_2, 3);
+        $this->assertEquals(Game::PLAYER_2_MARK, $game->getBoard()[3]);
+        $this->assertEquals(Game::PLAYER_1, $game->getNextPlayer());
+        $this->assertEquals(Game::EMPTY_MARK, $game->getWinner());
+
+
+        $game->makeMove(Game::PLAYER_1, 4);
+        $this->assertEquals(Game::PLAYER_1_MARK, $game->getBoard()[4]);
+        $this->assertEquals(Game::PLAYER_2, $game->getNextPlayer());
+        $this->assertEquals(Game::EMPTY_MARK, $game->getWinner());
+
+
+        $game->makeMove(Game::PLAYER_2, 5);
+        $this->assertEquals(Game::PLAYER_2_MARK, $game->getBoard()[5]);
+        $this->assertEquals(Game::PLAYER_1, $game->getNextPlayer());
+        $this->assertEquals(Game::EMPTY_MARK, $game->getWinner());
+
+
+        $game->makeMove(Game::PLAYER_1, 6);
+        $this->assertEquals(Game::PLAYER_1_MARK, $game->getBoard()[6]);
+        $this->assertEquals(Game::PLAYER_2, $game->getNextPlayer());
+        $this->assertEquals(Game::PLAYER_1, $game->getWinner());
+
+
+
+    }
 }

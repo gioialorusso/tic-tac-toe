@@ -105,7 +105,7 @@ class Game extends BaseEntity
             //if all the winning positions are occupied by the same symbol, the player won the game
             //of course the board must not be empty (-‿-")
             if ($this->board[$winning_position[0]] !== self::EMPTY_MARK && $this->board[$winning_position[0]] === $this->board[$winning_position[1]] && $this->board[$winning_position[1]] === $this->board[$winning_position[2]]) {
-                return $this->board[$winning_position[0]] === self::PLAYER_1_MARK ? self::PLAYER_1 : self::PLAYER_2;
+                return $this->board[$winning_position[0]] === self::PLAYER_1_MARK ? (string)self::PLAYER_1 : (string)self::PLAYER_2;
             }
         }
         return null;
@@ -128,6 +128,9 @@ class Game extends BaseEntity
 
     public function makeMove(int $player, int $position): void
     {
+
+        //we assume that the request has been validated, but the validation could also be done here.
+
         $this->board[$position] = $player === self::PLAYER_1 ? self::PLAYER_1_MARK : self::PLAYER_2_MARK;
         $this->nextPlayer = $player === self::PLAYER_1 ? self::PLAYER_2 : self::PLAYER_1;
         $winner = $this->checkWinner();

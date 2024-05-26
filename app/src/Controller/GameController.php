@@ -16,6 +16,15 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class GameController extends AbstractController
 {
+
+    //create constants for all error messages in functional validation
+    const string GAME_NOT_FOUND = 'Game not found';
+    const string NOT_PLAYERS_TURN = 'It is not player %s\'s turn.';
+    const string BOARD_FULL = 'The board is full.';
+    const string POSITION_OCCUPIED = 'This position is already occupied.';
+    const string GAME_WON = 'The game is already won.';
+
+
     #[Route('/api/game/start', name: 'start_game', methods: ['POST'])]
     public function start(EntityManagerInterface $entityManager): JsonResponse
     {
@@ -77,23 +86,23 @@ class GameController extends AbstractController
     {
         //game not found
         if(is_null($game)){
-            return ApiResponse::createKOResponse(Response::HTTP_NOT_FOUND, [], 'Game not found');
+            return ApiResponse::createKOResponse(Response::HTTP_NOT_FOUND, [], self::GAME_NOT_FOUND);
         }
         //wrong player's turn
         if($game->getNextPlayer() != $moveRequest->getPlayer()){
-            return ApiResponse::createKOResponse(Response::HTTP_BAD_REQUEST, [], "It is not player {$moveRequest->getPlayer()}'s turn.");
+            return ApiResponse::createKOResponse(Response::HTTP_BAD_REQUEST, [], sprintf(self::NOT_PLAYERS_TURN, $moveRequest->getPlayer()));
         }
         //move on full board
         if($game->isBoardFull()){
-            return ApiResponse::createKOResponse(Response::HTTP_BAD_REQUEST, [], 'The board is full.');
+            return ApiResponse::createKOResponse(Response::HTTP_BAD_REQUEST, [], self::BOARD_FULL);
         }
         //move on an already occupied position
         if($game->isPositionOccupied($moveRequest->getPosition())){
-            return ApiResponse::createKOResponse(Response::HTTP_BAD_REQUEST, [], 'This position is already occupied.');
+            return ApiResponse::createKOResponse(Response::HTTP_BAD_REQUEST, [], self::POSITION_OCCUPIED);
         }
         //move on an already won game
         if(($game->isWon())){
-            return ApiResponse::createKOResponse(Response::HTTP_BAD_REQUEST, [], 'The game is already won.');
+            return ApiResponse::createKOResponse(Response::HTTP_BAD_REQUEST, [], self::GAME_WON);
         }
 
         return null;
