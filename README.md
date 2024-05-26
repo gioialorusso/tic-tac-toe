@@ -93,8 +93,8 @@ Actually, the mysql folder exists but has no specific configurations (there is a
 ### Symfony
 I created a new Symfony project in the app directory using the `composer create-project symfony/skeleton .` command. I installed some needed dependencies (`composer require symfony/maker-bundle --dev`, `composer require orm`) to create my entities.<br/>
 
-### Unit tests
-Before going on with the implementation, I created some unit tests to test the creation of the game and the moves. I used the `phpunit` library to run the tests. From Symfony docs, I used `composer require --dev symfony/test-pack` to install PHPUnit. <br/>
+### Tests
+Before going on with the implementation, I created some tests to test the creation of the game and the moves. I used the `phpunit` library to run the tests. From Symfony docs, I used `composer require --dev symfony/test-pack` to install PHPUnit. <br/>
 I created some basic unit tests, for example the ApiResponseTest. These tests do not need any db to work. <br/>
 For Entities tests (GameTest) and for API tests (GameControllerTest), I needed to check the interaction with the database, so I create a Base Test Class which drops and creates a test database. <br/>
 To connect to the test database, I specified the credentials in the .env.test file, as well as the regular credentials for the application which are stored in the .env file. Of course this should be avoided for production credentials and credentials should be managed by some sort of secret management service. (Kubernetes + Cloud secret storage service, for example). <br/>
