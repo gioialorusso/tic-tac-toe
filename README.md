@@ -95,8 +95,8 @@ I created a new Symfony project in the app directory using the `composer create-
 
 ### Tests
 Before going on with the implementation, I created some tests to test the creation of the game and the moves. I used the `phpunit` library to run the tests. From Symfony docs, I used `composer require --dev symfony/test-pack` to install PHPUnit. <br/>
-I created some basic unit tests, for example the ApiResponseTest. These tests do not need any db to work. <br/>
-For Entities tests (GameTest) and for API tests (GameControllerTest), I needed to check the interaction with the database, so I create a Base Test Class which drops and creates a test database. <br/>
+I created some basic unit tests, for example the ApiResponseTest and the GameTest. These tests do not need any db to work. <br/>
+For end-to-end API tests (GameApiTest and ValidateGameApiTest), I wanted to check the interaction with the database, so I create a Base Test Class which drops and creates a test database. <br/>
 To connect to the test database, I specified the credentials in the .env.test file, as well as the regular credentials for the application which are stored in the .env file. Of course this should be avoided for production credentials and credentials should be managed by some sort of secret management service. (Kubernetes + Cloud secret storage service, for example). <br/>
 When creating the test database, there are some fixture pre-loaded in the db, for example the admin user, which is needed to test the authentication and some APIs. <br/>
 Not coming from a Symfony/other framework background, I recognize that tests can be for sure improved (using mocks, for example, and taking advantage of the possibility to easily inject dependencies). As today, tests are pretty much end-to-end tests for APIs and unit tests for Game and ApiResponse classes. <br/>
