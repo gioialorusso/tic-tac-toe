@@ -77,6 +77,7 @@ php bin/phpunit --filter testVerticalWinGame
 php bin/phpunit --filter testDiagonalWinGame
 php bin/phpunit --filter testNoWinner
 ```
+FYI these tests outputs also the board of the game, so you can see the moves made by the players.
 
 ## Implementation details
 
