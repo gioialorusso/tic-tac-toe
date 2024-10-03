@@ -116,8 +116,3 @@ I created translations for the validation messages to have more readability in t
 
 #### OK - KO responses
 I standardized the responses of the APIs, so that the client can understand if the request was successful or not and knows where the returned data are. For success and error purpose, it could also be enough to check the HTTP status code. <br/>
-
-
-## Conclusion
-
-This should be pretty much all. I had a lot of fun creating this project and I hope you will enjoy it too. I used Symfony to dig down into some concepts I didn't know and to freshen up my knowledge about this framework. <br/>
